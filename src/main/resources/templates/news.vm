@@ -1,0 +1,43 @@
+<html>
+<body>
+<pre>
+妖猪干脆去做鸡
+$!{value1}
+
+#foreach ($sister in $sis)
+sister $!{foreach.index}/$!{foreach.count}: $!{sister}
+#end
+
+#foreach($key in $map.keySet())
+Number $!{foreach.index}/$!{foreach.count}: $!{key} $map.get($key)
+#end
+
+User:$!{user.name}
+User:$!{user.getName()}
+
+#set($title = "jiemei")
+##include是把整个文本包含进来，Parse要对vm进行编译
+
+Include: #include("header.vm") <br>
+Parse: #parse("header.vm")
+
+#macro (jmlist, $sister, $index)
+Jimei By Macro $index, $sister
+#end
+
+#foreach ($sister in $sis)
+#jmlist($sister, $foreach.index)
+#end
+
+#set ($hello = "hello")
+#set($hworld1 = "$!{hello} world")
+#set($hworld2 = '$!{hello} world')
+hworld1: $hworld1
+hworld2: $hworld2
+
+
+</pre>
+>
+</body>
+>
+</html>
