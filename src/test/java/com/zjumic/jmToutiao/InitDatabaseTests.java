@@ -1,6 +1,8 @@
 package com.zjumic.jmToutiao;
 
+import com.zjumic.jmToutiao.dao.NewsDAO;
 import com.zjumic.jmToutiao.dao.UserDAO;
+import com.zjumic.jmToutiao.model.News;
 import com.zjumic.jmToutiao.model.User;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,6 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.Date;
 import java.util.Random;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -19,6 +22,9 @@ import java.util.Random;
 public class InitDatabaseTests {
 	@Autowired
 	UserDAO userDAO;
+	@Autowired
+    NewsDAO newsDAO;
+
 	@Test
 	public void contextLoads() {
 		Random random = new Random();
@@ -29,6 +35,19 @@ public class InitDatabaseTests {
 			user.setPassword("");
 			user.setSalt("");
 			userDAO.addUser(user);
+
+			News news = new News();
+			news.setCommentCount(i);
+			Date date = new Date();
+			date.setTime(date.getTime() + 1000*3600*5*i);
+			news.setCreatedDate(date);
+			news.setImage(String.format("http://images.nowcoder.com/head/%dm.png", random.nextInt(1000)));
+			news.setLikeCount(i+1);
+			news.setUserId(i+1);
+			news.setTitle(String.format("TITLE{%d}", i));
+            news.setLink(String.format("http://www.nowcoder.com/%d.html", i));
+
+            newsDAO.addNews(news);
 
 			user.setPassword("newpassword");
 			userDAO.updatePassword(user);
