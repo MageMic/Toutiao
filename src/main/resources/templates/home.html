@@ -30,8 +30,8 @@
                 </button>
 
                 <a href="http://nowcoder.com/" class="navbar-brand logo">
-                  <h1>头条资讯</h1>
-                  <h3>你关心的才是头条</h3>
+                  <h1>姐妹头条</h1>
+                  <h3>姐妹们关心的才是头条</h3>
                 </a>
             </div>
 
@@ -109,16 +109,21 @@
         <div class="container" id="daily">
             <div class="jscroll-inner">
                 <div class="daily">
+                    #set($cur_date = '')
+                    #foreach($vo in $vos)
+                    #if ($cur_date != $date.format('yyyy-MM-dd', $vo.news.createdDate))
+                        #if ($foreach.index > 0)
+                        </div>## 上一条时间和现在一条不一样，上一条要收尾，收的是posts的尾
+                        #end
+                    #set($cur_date = $date.format('yyyy-MM-dd', $vo.news.createdDate))
+                <h3 class="date">
+                    <i class="fa icon-calendar"></i>
+                    <span>姐妹头条 &nbsp; $date.format('yyyy-MM-dd', $vo.news.createdDate)</span>
 
-                    <h3 class="date">
-                        <i class="fa icon-calendar"></i>
-                        <span>头条资讯</span>
-                        <small>2016-05-24</small>
-                    </h3>
+                </h3>
 
-                    <div class="posts">
-
-                        #foreach($vo in $vos)
+                <div class="posts">
+                    #end ## 每一条时间一样的话，就从下面开始，直接开始post，所以posts遇到时间不一样或者最后一条时要收尾
                         <div class="post">
                             <div class="votebar">
                                 <button class="click-like up" aria-pressed="false" title="赞同"><i class="vote-arrow"></i><span class="count">$!{vo.news.likeCount}</span></button>
@@ -159,7 +164,11 @@
 
                             <div class="subject-name">来自 <a href="/user/$!{vo.user.id}">$!{vo.user.id}</a></div>
                         </div>
+                        #if ($foreach.count == $vos.size()) ##最后有个元素要收尾
+                        </div>
                         #end
+
+                    #end
                         <!--
                         <div class="alert alert-warning subscribe-banner" role="alert">
                           《头条八卦》，每日 Top 3 通过邮件发送给你。      <a class="btn btn-info btn-sm pull-right" href="http://nowcoder.com/account/settings">立即订阅</a>
