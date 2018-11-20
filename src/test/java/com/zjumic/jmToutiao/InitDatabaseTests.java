@@ -1,7 +1,9 @@
 package com.zjumic.jmToutiao;
 
+import com.zjumic.jmToutiao.dao.LoginTicketDAO;
 import com.zjumic.jmToutiao.dao.NewsDAO;
 import com.zjumic.jmToutiao.dao.UserDAO;
+import com.zjumic.jmToutiao.model.LoginTicket;
 import com.zjumic.jmToutiao.model.News;
 import com.zjumic.jmToutiao.model.User;
 import org.junit.Assert;
@@ -24,6 +26,8 @@ public class InitDatabaseTests {
 	UserDAO userDAO;
 	@Autowired
     NewsDAO newsDAO;
+    @Autowired
+    LoginTicketDAO loginTicketDAO;
 
 	@Test
 	public void contextLoads() {
@@ -51,9 +55,22 @@ public class InitDatabaseTests {
 
 			user.setPassword("newpassword");
 			userDAO.updatePassword(user);
+
+            LoginTicket ticket = new LoginTicket();
+            ticket.setStatus(0);
+            ticket.setUserId(i+1);
+            ticket.setExpired(date);
+            ticket.setTicket(String.format("TICKET%d", i+1));
+            loginTicketDAO.addTicket(ticket);
+            loginTicketDAO.updateStatus(ticket.getTicket(),2);
+
 		}
 		Assert.assertEquals("newpassword", userDAO.selectById(1).getPassword());
 		userDAO.deleteById(1);
 		Assert.assertNull(userDAO.selectById(1));
+
+        Assert.assertEquals(2, loginTicketDAO.selectByTicket("Ticket1").getStatus());
+
+
 	}
 }
