@@ -68,13 +68,12 @@ public class UserService {
             return map;
         }
 
-        if (JiemeiUtil.MD5(password+user.getSalt()).equals(user.getPassword())) {
+        if (!JiemeiUtil.MD5(password+user.getSalt()).equals(user.getPassword())) {
             map.put("msgpwd", "密码不正确");
             return map;
         }
         //ticket下发
         //查找用户ticket
-
         String ticket = addLoginTicket(user.getId());
         map.put("ticket",ticket);
         return map;

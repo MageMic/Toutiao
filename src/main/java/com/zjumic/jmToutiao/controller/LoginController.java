@@ -60,7 +60,7 @@ public class LoginController {
     public String login(@RequestParam("username")String username,
                         @RequestParam("password")String password,
                         @RequestParam(value="rember", defaultValue = "0"
-                      ) int rememberme, Model model) {
+                      ) int rememberme, Model model, HttpServletResponse response) {
         try {
             Map<String, Object> map = userService.login(username, password);
             //{"code":0, "msg":"xxxx"} , <b>}
@@ -70,6 +70,7 @@ public class LoginController {
                 if (rememberme > 0) {
                     cookie.setMaxAge(3600*24*5);
                 }
+                response.addCookie(cookie);
                 return JiemeiUtil.getJSONString(0, "登录成功");
             } else {
                 return JiemeiUtil.getJSONString(1, map);
