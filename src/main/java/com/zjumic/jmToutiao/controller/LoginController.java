@@ -79,6 +79,12 @@ public class LoginController {
             return JiemeiUtil.getJSONString(1, "登录异常");
         }
     }
+
+    @RequestMapping(path = {"/logout/"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public String logout(@CookieValue("ticket") String ticket) {
+        userService.logout(ticket);
+        return "redirect:/";
+    }
 }
 
 

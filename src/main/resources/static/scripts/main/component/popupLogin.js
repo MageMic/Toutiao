@@ -1,4 +1,5 @@
 (function (window) {
+(function (window) {
     var PopupLogin = Base.createClass('main.component.PopupLogin');
     var Popup = Base.getClass('main.component.Popup');
     var Component = Base.getClass('main.component.Component');

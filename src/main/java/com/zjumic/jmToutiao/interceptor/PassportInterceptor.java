@@ -2,6 +2,7 @@ package com.zjumic.jmToutiao.interceptor;
 
 import com.zjumic.jmToutiao.dao.LoginTicketDAO;
 import com.zjumic.jmToutiao.dao.UserDAO;
+import com.zjumic.jmToutiao.model.HostHolder;
 import com.zjumic.jmToutiao.model.LoginTicket;
 import com.zjumic.jmToutiao.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,11 @@ import java.util.Date;
 public class PassportInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private LoginTicket loginTicket;
-    @Autowired
     private UserDAO userDAO;
     @Autowired
     private LoginTicketDAO loginTicketDAO;
+    @Autowired
+    private HostHolder hostHolder;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -37,23 +38,24 @@ public class PassportInterceptor implements HandlerInterceptor {
         }
         if (ticket != null) {
             LoginTicket loginTicket = loginTicketDAO.selectByTicket(ticket);
-            if (loginTicket == null || loginTicket.getExpired().before(new Date()))
+            if (loginTicket == null || loginTicket.getExpired().before(new Date()) || loginTicket.getStatus() != 0)  {
                 return true;
+            }
+            User user = userDAO.selectById(loginTicket.getId());
+            hostHolder.setUser(user);
         }
-
-        User user = userDAO.selectById(loginTicket.getId());
-
-
-        return false;
+        return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-
+        if (modelAndView != null && hostHolder.getUser() != null) {
+            modelAndView.addObject("user", hostHolder.getUser());
+        }
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-
+        hostHolder.clear();
     }
 }

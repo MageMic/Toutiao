@@ -73,6 +73,8 @@ public class UserService {
             return map;
         }
         //ticket下发
+        //查找用户ticket
+
         String ticket = addLoginTicket(user.getId());
         map.put("ticket",ticket);
         return map;
@@ -92,5 +94,9 @@ public class UserService {
 
     public User getUser(int id) {
         return userDAO.selectById(id);
+    }
+
+    public void logout(String ticket) {
+        loginTicketDAO.updateStatus(ticket, 1);
     }
 }

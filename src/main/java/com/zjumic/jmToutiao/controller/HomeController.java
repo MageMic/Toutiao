@@ -1,5 +1,6 @@
 package com.zjumic.jmToutiao.controller;
 
+import com.zjumic.jmToutiao.model.HostHolder;
 import com.zjumic.jmToutiao.model.News;
 import com.zjumic.jmToutiao.model.ViewObject;
 import com.zjumic.jmToutiao.service.NewsService;
@@ -21,6 +22,9 @@ public class HomeController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    HostHolder hostHolder;
+
     private List<ViewObject> getNews(int userId, int offset, int limit) {
         List<News> newsList = newsService.getLatestNews(userId, offset, limit);
 
@@ -38,13 +42,13 @@ public class HomeController {
     @RequestMapping(path = {"/", "/index"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String index(@RequestParam(value = "userId", defaultValue = "0")int userId, Model model) {
         model.addAttribute("vos",getNews(0,0,10));
-        return "home";
+        return "home1";
     }
 
     @RequestMapping(path = {"/user/{userId}"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String userIndex(@PathVariable("userId")int userId, Model model) {
         model.addAttribute("vos",getNews(userId,0,10));
-        return "home";
+        return "home1";
     }
 
 
