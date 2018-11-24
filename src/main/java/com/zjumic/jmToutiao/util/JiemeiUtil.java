@@ -10,6 +10,19 @@ import java.util.Map;
 public class JiemeiUtil {
     private static final Logger logger = LoggerFactory.getLogger(JiemeiUtil.class);
 
+    public static String IMAGE_DIR = "E:/upload/";
+
+    public static String TOUTIAO_DOMAIN = "http://localhost:8080/";
+    public static String[] IMAGE_FILE_EXT = new String[] {"png", "bmp", "jpg", "jpeg"};
+    public static boolean isFileAllowed(String fileExt) {
+        for (String ext: IMAGE_FILE_EXT) {
+            if (ext.equals(fileExt)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static String getJSONString(int code) {
         JSONObject json = new JSONObject();
         json.put("code",code);
