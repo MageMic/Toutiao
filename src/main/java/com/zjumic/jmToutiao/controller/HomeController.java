@@ -42,7 +42,7 @@ public class HomeController {
     @RequestMapping(path = {"/", "/index"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String index(@RequestParam(value = "userId", defaultValue = "0")int userId, Model model) {
         model.addAttribute("vos",getNews(0,0,10));
-        return "home";
+        return "home5";
     }
 
     @RequestMapping(path = {"/user/{userId}"}, method = {RequestMethod.GET, RequestMethod.POST})
@@ -50,7 +50,7 @@ public class HomeController {
                             @RequestParam(value = "pop", defaultValue = "0") int pop) {
         model.addAttribute("vos",getNews(userId,0,10));
         model.addAttribute("pop",pop);
-        return "home";
+        return "home5";
     }
 
 
