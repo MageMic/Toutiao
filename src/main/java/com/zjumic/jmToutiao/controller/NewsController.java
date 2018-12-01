@@ -1,6 +1,7 @@
 package com.zjumic.jmToutiao.controller;
 
 import com.zjumic.jmToutiao.service.NewsService;
+import com.zjumic.jmToutiao.service.QiniuService;
 import com.zjumic.jmToutiao.util.JiemeiUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +22,10 @@ import java.io.FileInputStream;
 public class NewsController {
     private static final Logger logger = LoggerFactory.getLogger(NewsController.class);
 
+    //@Autowired
+    //NewsService newsService;
     @Autowired
-    NewsService newsService;
+    QiniuService qiniuService;
 
     @RequestMapping(path = {"/image"}, method = {RequestMethod.GET})
     @ResponseBody
@@ -42,7 +45,8 @@ public class NewsController {
     @ResponseBody
     public String uploadImage(@RequestParam("file")MultipartFile file) {
         try {
-            String fileUrl = newsService.saveImage(file);
+            //String fileUrl = newsService.saveImage(file);
+            String fileUrl = qiniuService.saveImage(file);
             if (fileUrl == null) {
                 return JiemeiUtil.getJSONString(1, "上传图片失败");
             }
