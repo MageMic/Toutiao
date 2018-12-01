@@ -1,5 +1,7 @@
 package com.zjumic.jmToutiao.controller;
 
+import com.zjumic.jmToutiao.model.HostHolder;
+import com.zjumic.jmToutiao.model.News;
 import com.zjumic.jmToutiao.service.NewsService;
 import com.zjumic.jmToutiao.service.QiniuService;
 import com.zjumic.jmToutiao.util.JiemeiUtil;
@@ -17,15 +19,18 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Date;
 
 @Controller
 public class NewsController {
     private static final Logger logger = LoggerFactory.getLogger(NewsController.class);
 
-    //@Autowired
-    //NewsService newsService;
+    @Autowired
+    NewsService newsService;
     @Autowired
     QiniuService qiniuService;
+    @Autowired
+    HostHolder hostHolder;
 
     @RequestMapping(path = {"/image"}, method = {RequestMethod.GET})
     @ResponseBody
@@ -38,6 +43,31 @@ public class NewsController {
                     response.getOutputStream());
         } catch (Exception e) {
             logger.error("读取图片错误" + e.getMessage());
+        }
+    }
+
+    @RequestMapping(path = {"/user/addNews/"}, method = {RequestMethod.POST})
+    @ResponseBody
+    public String addNews(@RequestParam ("image") String image,
+                          @RequestParam ("title") String title,
+                          @RequestParam ("link") String link) {
+        try {
+            News news = new News();
+            if (hostHolder.getUser() != null){
+                news.setUserId(hostHolder.getUser().getId());
+            } else {
+                //匿名用户？？？
+                news.setUserId(1);
+            }
+            news.setImage(image);
+            news.setCreatedDate(new Date());
+            news.setTitle(title);
+            news.setLink(link);
+            newsService.addNews(news);
+            return JiemeiUtil.getJSONString(0);
+        } catch (Exception e) {
+            logger.error("添加资讯错误：" + e.getMessage());
+            return JiemeiUtil.getJSONString(1, "资讯发布失败");
         }
     }
 
