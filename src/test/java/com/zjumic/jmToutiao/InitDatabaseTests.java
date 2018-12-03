@@ -1,11 +1,10 @@
 package com.zjumic.jmToutiao;
 
+import com.zjumic.jmToutiao.dao.CommentDAO;
 import com.zjumic.jmToutiao.dao.LoginTicketDAO;
 import com.zjumic.jmToutiao.dao.NewsDAO;
 import com.zjumic.jmToutiao.dao.UserDAO;
-import com.zjumic.jmToutiao.model.LoginTicket;
-import com.zjumic.jmToutiao.model.News;
-import com.zjumic.jmToutiao.model.User;
+import com.zjumic.jmToutiao.model.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +19,7 @@ import java.util.Random;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = JmToutiaoApplication.class)
-@Sql("/init-schema.sql")
+@Sql("/init-schema1.sql")
 public class InitDatabaseTests {
 	@Autowired
 	UserDAO userDAO;
@@ -28,14 +27,17 @@ public class InitDatabaseTests {
     NewsDAO newsDAO;
     @Autowired
     LoginTicketDAO loginTicketDAO;
+    @Autowired
+	CommentDAO commentDAO;
 
 	@Test
 	public void contextLoads() {
 		Random random = new Random();
 		for (int i = 0; i< 11; i++) {
+
 			User user = new User();
 			user.setHeadUrl(String.format("http://images.nowcoder.com/head/%dt.png", random.nextInt(1000)));
-			user.setName(String.format("Jiemei%d",i));
+			user.setName(String.format("Jiemei%d",i + 11));
 			user.setPassword("");
 			user.setSalt("");
 			userDAO.addUser(user);
@@ -56,20 +58,17 @@ public class InitDatabaseTests {
 			user.setPassword("newpassword");
 			userDAO.updatePassword(user);
 
-            LoginTicket ticket = new LoginTicket();
-            ticket.setStatus(0);
-            ticket.setUserId(i+1);
-            ticket.setExpired(date);
-            ticket.setTicket(String.format("TICKET%d", i+1));
-            loginTicketDAO.addTicket(ticket);
-            loginTicketDAO.updateStatus(ticket.getTicket(),2);
-
+			for (int j = 0; j < 3; ++j) {
+				Comment comment = new Comment();
+				comment.setUserId(i+1);
+				comment.setEntityId(news.getId());
+				comment.setEntityType(EntityType.ENTITY_NEWS);
+				comment.setStatus(0);
+				comment.setCreatedDate(new Date());
+				comment.setContent("Comment " + String.valueOf(j));
+				commentDAO.addComment(comment);
+			}
 		}
-		Assert.assertEquals("newpassword", userDAO.selectById(1).getPassword());
-		userDAO.deleteById(1);
-		Assert.assertNull(userDAO.selectById(1));
-
-        Assert.assertEquals(2, loginTicketDAO.selectByTicket("Ticket1").getStatus());
 
 
 	}

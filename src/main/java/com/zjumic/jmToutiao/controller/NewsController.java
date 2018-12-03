@@ -4,16 +4,15 @@ import com.zjumic.jmToutiao.model.HostHolder;
 import com.zjumic.jmToutiao.model.News;
 import com.zjumic.jmToutiao.service.NewsService;
 import com.zjumic.jmToutiao.service.QiniuService;
+import com.zjumic.jmToutiao.service.UserService;
 import com.zjumic.jmToutiao.util.JiemeiUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +29,21 @@ public class NewsController {
     @Autowired
     QiniuService qiniuService;
     @Autowired
+    UserService userService;
+    @Autowired
     HostHolder hostHolder;
+
+    @RequestMapping(path = {"/news/{newsId}"}, method = {RequestMethod.GET})
+    public String newsDetail(@PathVariable ("newsId") int newsId, Model model) {
+        //取出news
+        News news = newsService.getById(newsId);
+        if (news != null) {
+            //评论
+        }
+        model.addAttribute("news", news);
+        model.addAttribute("owner", userService.getUser(news.getUserId()));
+        return "detail";
+    }
 
     @RequestMapping(path = {"/image"}, method = {RequestMethod.GET})
     @ResponseBody
