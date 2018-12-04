@@ -16,7 +16,7 @@ public class MessageService {
         return messageDAO.addMessage(message);
     }
 
-    public List<Message> getConversationDetai(String conversationId, int offset, int limit){
+    public List<Message> getConversationDetail(String conversationId, int offset, int limit){
         return messageDAO.getConversationDetail(conversationId, offset, limit);
     }
 }
