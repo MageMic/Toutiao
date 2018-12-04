@@ -1,10 +1,7 @@
 package com.zjumic.jmToutiao.dao;
 
 import com.zjumic.jmToutiao.model.Comment;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -21,11 +18,15 @@ public interface CommentDAO {
     int addComment(Comment comment);
 
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where entity_id=#{entityId} and entity_type=#{entityType} order by id desc"})
-    List<Comment> selectByentity(@Param("entityId") int entityId,
+    List<Comment> selectByEntity(@Param("entityId") int entityId,
                                  @Param("entityType") int entityType);
 
     //获取某个实体评论的评论总数
     @Select({"select count(id) from ", TABLE_NAME, " where entity_id=#{entityId} and entity_type=#{entityType}"})
     int getCommentCount(@Param("entityId") int entityId,
                                  @Param("entityType") int entityType);
+
+    @Update({"update ", TABLE_NAME, " set status=#{status} where entity_id=#{entityId} and entity_type=#{entityType} order by id desc"})
+    void updateStatus(@Param("entityId") int entityId,
+                                 @Param("entityType") int entityType, @Param("status") int status);
 }

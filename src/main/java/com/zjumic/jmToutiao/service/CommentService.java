@@ -13,7 +13,7 @@ public class CommentService {
     private CommentDAO commentDAO;
 
     public List<Comment> getCommentsByEntity(int entityId, int entityType){
-        return commentDAO.selectByentity(entityId, entityType);
+        return commentDAO.selectByEntity(entityId, entityType);
     }
 
     public int addComment(Comment comment) {
@@ -22,5 +22,9 @@ public class CommentService {
 
     public int getCommentCount(int entityId, int entityType) {
         return commentDAO.getCommentCount(entityId, entityType);
+    }
+
+    public void deleteComment(int entityId, int entityType) {
+        commentDAO.updateStatus(entityId, entityType, 1);
     }
 }
