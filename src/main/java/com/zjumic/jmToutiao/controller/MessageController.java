@@ -28,6 +28,32 @@ public class MessageController {
     MessageService messageService;
     @Autowired
     UserService userService;
+    @Autowired
+    HostHolder hostHolder;
+
+    @RequestMapping(path = {"/msg/list"}, method = {RequestMethod.GET})
+    public String conversationList(Model model) {
+        try{
+            int localUserId = hostHolder.getUser().getId();
+            List<ViewObject> conversations = new ArrayList<>();
+            List<Message> conversationList = messageService.getConversationList(localUserId, 0, 10);
+            for (Message msg : conversationList) {
+                ViewObject vo = new ViewObject();
+                vo.set("conversation", msg);
+                vo.set("unreadCount", messageService.getConversationUnreadCount(localUserId,msg.getConversationId()));
+                //targetId 可能是from也可能是to
+                int targetId = (msg.getFromId() == localUserId) ? msg.getToId(): msg.getFromId();
+                User targetUser = userService.getUser(targetId);
+                vo.set("target", targetUser);
+
+                conversations.add(vo);
+            }
+            model.addAttribute("conversations", conversations);
+        }catch (Exception e) {
+            logger.error("获取站内信列表失败" + e.getMessage());
+        }
+        return "letter";
+    }
 
     @RequestMapping(path = {"/msg/detail"}, method = {RequestMethod.GET})
     public String conversationDetail(Model model, @Param("conversationId") String conversationId) {
@@ -36,6 +62,9 @@ public class MessageController {
             List<ViewObject>  messages = new ArrayList<ViewObject>();
             for (Message msg : conversationList){
                 ViewObject vo = new ViewObject();
+                if (msg.getHasRead() == 0) {
+                    messageService.readUnread(msg.getToId(), conversationId);
+                }
                 vo.set("message", msg);
                 User user = userService.getUser(msg.getFromId());
                 if (user == null) {
@@ -46,6 +75,7 @@ public class MessageController {
                 messages.add(vo);
             }
             model.addAttribute("messages", messages);
+            return "letterDetail";
         } catch (Exception e) {
            logger.error("获取详情消息失败" + e.getMessage());
         }

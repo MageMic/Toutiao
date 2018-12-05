@@ -3,7 +3,7 @@
         <div class="container">
             <ul class="letter-list">
                 #foreach($conversation in $conversations)
-                <li id="conversation-item-10005_622873">
+                <li id="conversation-item">
                     <a class="letter-link" href="/msg/detail?conversationId=$!{conversation.conversation.conversationId}"></a>
                     <div class="letter-info">
                         <span class="l-time">$date.format('yyyy-MM-dd HH:mm:ss', $!{conversation.conversation.createdDate})</span>
@@ -22,13 +22,13 @@
                         <span class="msg-num">
                             $!{conversation.unreadCount}
                         </span>
-                        <a class="list-head" href="/user/$!{conversation.userId}">
-                            <img alt="头像" src="$!{conversation.headUrl}">
+                        <a class="list-head" href="/user/$!{conversation.target.userId}">
+                            <img alt="头像" src="$!{conversation.target.headUrl}">
                         </a>
                     </div>
                     <div class="letter-detail">
-                        <a title="$!{conversation.userName}" class="letter-name level-color-1">
-                            $!{conversation.userName}
+                        <a title="$!{conversation.target.name}" class="letter-name level-color-1">
+                            $!{conversation.target.name}
                         </a>
                         <p class="letter-brief">
                             <a href="/msg/detail?conversationId=$!{conversation.conversation.conversationId}">
